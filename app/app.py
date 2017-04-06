@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 import time
+from datetime import datetime
 
-from flask import Flask, render_template, abort, jsonify, request
+from flask import Flask, render_template, jsonify
 
 from kantinemeny import Kantinemeny, Cafeterias
 
@@ -13,6 +14,17 @@ app = Flask(__name__)
 MENU_VALID_TIME = 300
 menus = {}
 cafeterias_map = Cafeterias("fetch")
+
+day_map = {
+    'Monday': 'mandag',
+    'Tursday': 'tirsdag',
+    'Wednesday': 'onsdag',
+    'Thursday': 'torsdag',
+    'Friday': 'friday',
+    'Saturday': 'lørdag',
+    'Sunday': 'søndag'
+}
+
 
 class Stats(object):
     startup = time.time()
@@ -26,8 +38,7 @@ def get_menu(location, filename):
     timestamp = time.time()
 
     if not menus.get(location, None) or (
-        timestamp - menus[location].timestamp >= MENU_VALID_TIME):
-
+            timestamp - menus[location].timestamp >= MENU_VALID_TIME):
         try:
             menus[location] = Kantinemeny(location, filename)
         except:
@@ -55,14 +66,19 @@ def index(shortname, json_response=False):
     filename = location["filename"]
 
     menu = get_menu(location_name, filename)
-    menu_age = time.time() - menu.timestamp
+
+    dt = datetime.now()
+    menu_age = dt.timestamp() - menu.timestamp
 
     if json_response:
+        dt = datetime.now()
+        dayname_eng = dt.strftime("%A")
         return jsonify({'supper': menu.soups,
                         'varmmat': menu.hot_dishes,
                         'dager': menu.days,
                         'meny_sist_sjekket_siden_i_sekunder': menu_age,
-                        'meny': menu.filename
+                        'meny': menu.filename,
+                        'dagnavn': day_map[dayname_eng]
                         })
 
     return render_template('index.html',
@@ -71,7 +87,6 @@ def index(shortname, json_response=False):
                            start=Stats.startup,
                            shortname=shortname,
                            fetched='{0:.2f}'.format(menu_age))
-
 
 
 if __name__ == "__main__":
