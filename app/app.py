@@ -20,7 +20,7 @@ day_map = {
     'Tursday': 'tirsdag',
     'Wednesday': 'onsdag',
     'Thursday': 'torsdag',
-    'Friday': 'friday',
+    'Friday': 'fredag',
     'Saturday': 'lørdag',
     'Sunday': 'søndag'
 }
