@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
+import os.path
+import json
 import time
 from datetime import datetime
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 
 from kantinemeny import Kantinemeny, Cafeterias
 
@@ -15,9 +17,19 @@ MENU_VALID_TIME = 300
 menus = {}
 cafeterias_map = Cafeterias("fetch")
 
+special_visitors_path = os.path.join(
+    os.path.dirname(
+        os.path.abspath(__file__)),
+    "../",
+    "special_visitors.json")
+if os.path.exists(special_visitors_path):
+    special_visitors = json.load(open(special_visitors_path))
+else:
+    special_visitors = {}
+
 day_map = {
     'Monday': 'mandag',
-    'Tursday': 'tirsdag',
+    'Tuesday': 'tirsdag',
     'Wednesday': 'onsdag',
     'Thursday': 'torsdag',
     'Friday': 'fredag',
@@ -41,7 +53,7 @@ def get_menu(location, filename):
             timestamp - menus[location].timestamp >= MENU_VALID_TIME):
         try:
             menus[location] = Kantinemeny(location, filename)
-        except:
+        except BaseException:
             if not menus.get(location, None):
                 raise
 
@@ -86,6 +98,8 @@ def index(shortname, json_response=False):
                            menu=menu,
                            start=Stats.startup,
                            shortname=shortname,
+                           visitor_ip=request.remote_addr,
+                           special_visitors=special_visitors,
                            fetched='{0:.2f}'.format(menu_age))
 
 

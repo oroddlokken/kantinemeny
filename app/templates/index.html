@@ -52,6 +52,10 @@
 Menyen ble sist sjekket for {{fetched}} sekunder siden.<br>
 <a href="/api/{{- shortname -}}/">API</a> - <a href="/kantiner/">Flere kantiner</a>
 
+{% if visitor_ip in special_visitors %}
+    {% include 'special_content.html' %}
+{% endif %}
+
 <div style="display:none;">{{visits}} visits since {{start}}</div>
 
 </body>
