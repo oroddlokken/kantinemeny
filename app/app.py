@@ -5,7 +5,8 @@ import json
 import time
 from datetime import datetime
 
-from flask import Flask, render_template, jsonify, request
+import requests
+from flask import Flask, render_template, jsonify, request, Response
 
 from kantinemeny import Kantinemeny, Cafeterias
 
@@ -59,7 +60,11 @@ def index(shortname, json_response=False):
     location_name = location["location"]
     filename = location["filename"]
 
-    menu = get_menu(location_name, filename)
+    try:
+        menu = get_menu(location_name, filename)
+    except requests.exceptions.HTTPError as e:
+        m = "Got {} from the Toma API".format(e.response.status_code)
+        return Response(m, status=e.response.status_code)
 
     dt = datetime.now()
     menu_age = dt.timestamp() - menu.timestamp
