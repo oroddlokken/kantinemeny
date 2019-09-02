@@ -62,7 +62,7 @@ def cafeterias():
 @app.route('/<shortname>/')
 @app.route('/api/<shortname>/', defaults={'json_response': True})
 def index(shortname, json_response=False):
-    location = cafeterias_map[shortname]
+    location = cafeterias_map[shortname.lower()]
 
     location_name = location["location"]
     filename = location["filename"]
