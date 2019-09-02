@@ -17,16 +17,6 @@ MENU_VALID_TIME = 300
 menus = {}
 cafeterias_map = Cafeterias("fetch")
 
-special_visitors_path = os.path.join(
-    os.path.dirname(
-        os.path.abspath(__file__)),
-    "../",
-    "special_visitors.json")
-if os.path.exists(special_visitors_path):
-    special_visitors = json.load(open(special_visitors_path))
-else:
-    special_visitors = {}
-
 day_map = {
     'Monday': 'mandag',
     'Tuesday': 'tirsdag',
@@ -99,7 +89,6 @@ def index(shortname, json_response=False):
                            start=Stats.startup,
                            shortname=shortname,
                            visitor_ip=request.remote_addr,
-                           special_visitors=special_visitors,
                            fetched='{0:.2f}'.format(menu_age))
 
 
