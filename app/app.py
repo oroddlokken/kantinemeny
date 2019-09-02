@@ -28,14 +28,6 @@ day_map = {
 }
 
 
-class Stats(object):
-    startup = time.time()
-    visits = {
-        "api": 0,
-        "page": 0
-    }
-
-
 def get_menu(location, filename):
     timestamp = time.time()
 
@@ -86,7 +78,6 @@ def index(shortname, json_response=False):
     return render_template('index.html',
                            location_name=location_name,
                            menu=menu,
-                           start=Stats.startup,
                            shortname=shortname,
                            visitor_ip=request.remote_addr,
                            fetched='{0:.2f}'.format(menu_age))
